@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: grocery-order-fulfillment-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/store}
+    username: ${DB_USER:store}
+    password: ${DB_PASSWORD:store}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    producer:
+      acks: all
+      properties:
+        enable.idempotence: true
+    consumer:
+      auto-offset-reset: earliest
+
+store:
+  zone: Europe/Amsterdam
+  slot-hold-ttl: 10m
+  topics:
+    order-placed: orders.placed
+  outbox:
+    poll-interval-ms: 500
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
